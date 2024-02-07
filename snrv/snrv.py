@@ -516,8 +516,8 @@ class Snrv(nn.Module):
         """
         create training and validation data loader. Since the input data is a time series, the split cannot
         be random. If `data` is a torch.tensor, the final val_frac of the data is used as the validation set.
-        If `data` is a list of torch.tensors, the (val_frac*total data) of the last tensor is used. If this exceeds
-        the length of the last tensor, a warning is printed and all data in last tensor is used for validation.
+        If `data` is a list of torch.tensors, the ceil(val_frac*len(data)) of the trajectories are used. If the
+        trajectories are not of the same length, the shortest trajectory is used for validation.
 
         Parameters
         ----------
