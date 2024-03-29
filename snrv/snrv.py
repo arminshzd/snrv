@@ -544,7 +544,7 @@ class Snrv(nn.Module):
             self._train_loader = DataLoader(
                 dataset=train_dataset,
                 batch_size=self.batch_size,
-                shuffle=True,
+                shuffle=False,
                 num_workers=self.num_workers,
             )
             val_dataset = DatasetSnrv(
@@ -829,30 +829,30 @@ class Snrv(nn.Module):
                 if hasattr(self, "scheduler"):
                     self.scheduler.step()
 
-                self.eval()
-                with torch.no_grad():
-                    val_losses = []
-                    if self._val_loader is None:
-                        validation_loss = np.NaN
-                        validation_losses.append(validation_loss)
-                    else:
-                        for x_t0_batch, x_tt_batch, pathweight_batch in self._val_loader:
-                            x_t0_batch = x_t0_batch.to(self.device)
-                            x_tt_batch = x_tt_batch.to(self.device)
-                            pathweight_batch = pathweight_batch.to(self.device)
-                            z_t0_batch, z_tt_batch = self(x_t0_batch, x_tt_batch)
-                            val_loss = self._loss_fn(
-                                z_t0_batch, z_tt_batch, pathweight_batch
-                            )
-                            val_loss = val_loss.item()
-                            val_losses.append(val_loss)
-                        validation_loss = float(np.mean(val_losses))
-                        validation_losses.append(validation_loss)
+            self.eval()
+            with torch.no_grad():
+                val_losses = []
+                if self._val_loader is None:
+                    validation_loss = np.NaN
+                    validation_losses.append(validation_loss)
+                else:
+                    for x_t0_batch, x_tt_batch, pathweight_batch in self._val_loader:
+                        x_t0_batch = x_t0_batch.to(self.device)
+                        x_tt_batch = x_tt_batch.to(self.device)
+                        pathweight_batch = pathweight_batch.to(self.device)
+                        z_t0_batch, z_tt_batch = self(x_t0_batch, x_tt_batch)
+                        val_loss = self._loss_fn(
+                            z_t0_batch, z_tt_batch, pathweight_batch
+                        )
+                        val_loss = val_loss.item()
+                        val_losses.append(val_loss)
+                    validation_loss = float(np.mean(val_losses))
+                    validation_losses.append(validation_loss)
 
-                print(
-                    "[Epoch %d]\t training loss = %.3f\t validation loss = %.3f"
-                    % (epoch, training_loss, validation_loss)
-                )
+            print(
+                "[Epoch %d]\t training loss = %.3f\t validation loss = %.3f"
+                % (epoch, training_loss, validation_loss)
+            )
 
         self.training_losses = training_losses
         self.validation_losses = validation_losses
