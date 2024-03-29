@@ -544,7 +544,7 @@ class Snrv(nn.Module):
             self._train_loader = DataLoader(
                 dataset=train_dataset,
                 batch_size=self.batch_size,
-                shuffle=False,
+                shuffle=True,
                 num_workers=self.num_workers,
             )
             val_dataset = DatasetSnrv(
