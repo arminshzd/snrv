@@ -606,6 +606,8 @@ class Snrv(nn.Module):
                         val_size = int(np.ceil(val_size)) # adjust val_frac to equal a whole number of trajectories
                         warn(f"""Selected validation size is larger/smaller than a single trajectory. Validation percentage will be changed to %{val_size/len(data)*100}.
                             You can change this behavior by reintializing the model with `val_frac=0` and manually feed the validation data using `val_data` argument of `fit`.""", stacklevel=2)
+                    else:
+                        val_size = int(val_size) # adjust val_frac to equal a whole number of trajectories
                     _create_dataloaders(data[:-val_size], data[-val_size:], ln_dynamical_weight, thermo_weight)
                 
                 else: # if trajectories are not of same length
